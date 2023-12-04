@@ -13,7 +13,7 @@ const ControlPresupuesto = ({ presupuesto, gastos }) => {
         setDisponible(totalDisponible)
         setGastado(totalGastado)
 
-    }, [gastos])
+    }, [gastos, presupuesto])
 
     const formatearCantidad = (cantidad) => {
         return cantidad.toLocaleString('en-US', {
