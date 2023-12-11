@@ -1,35 +1,46 @@
 import CerrarBtn from '../img/cerrar.svg'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Mensaje from './Mensaje'
 
-const Modal = ({setModal,animarModal,setAnimarModal,guardarGasto}) => {
+const Modal = ({ setModal, animarModal, setAnimarModal, guardarGasto, gastoEditar }) => {
 
-    const [nombre,setNombre] = useState('')
-    const [cantidad,setCantidad] = useState('')
-    const [categoria,setCategoria] = useState('')
+    const [nombre, setNombre] = useState('')
+    const [cantidad, setCantidad] = useState('')
+    const [categoria, setCategoria] = useState('')
+    const [mensaje, setMensaje] = useState('')
+    const [id,setId] = useState('')
+    const [fecha,setFecha] = useState('')
 
-    const [mensaje,setMensaje] = useState('')
+    useEffect(() => {
+        if (Object.keys(gastoEditar).length > 0) {
+            setNombre(gastoEditar.nombre)
+            setCantidad(gastoEditar.cantidad)
+            setCategoria(gastoEditar.categoria)
+            setId(gastoEditar.id)
+            setFecha(gastoEditar.fecha)
+        }
+    },[]);
 
-    const ocultarModal = () =>{
+    const ocultarModal = () => {
         setAnimarModal(false)
-        setTimeout(()=>{
+        setTimeout(() => {
             setModal(false)
-        },500)
+        }, 500)
     }
 
-    const handleSubmit = e =>{
+    const handleSubmit = e => {
         e.preventDefault();
-        if([nombre,cantidad,categoria].includes('')){
+        if ([nombre, cantidad, categoria].includes('')) {
             setMensaje('Todos los campos son obligatorios')
 
-            setTimeout(() =>{
+            setTimeout(() => {
                 setMensaje('')
-            },3000)
+            }, 3000)
 
             return
         }
 
-        guardarGasto({nombre,cantidad,categoria})
+        guardarGasto({ nombre, cantidad, categoria, id, fecha })
     }
 
     return (
@@ -38,38 +49,38 @@ const Modal = ({setModal,animarModal,setAnimarModal,guardarGasto}) => {
 
             <div className="cerrar-modal">
 
-                <img 
-                    src={CerrarBtn} 
-                    alt="Cerrar modal" 
+                <img
+                    src={CerrarBtn}
+                    alt="Cerrar modal"
                     onClick={ocultarModal}
                 />
 
             </div>
 
-            <form 
+            <form
                 onSubmit={handleSubmit}
-                className={`formulario ${animarModal? "animar":'cerrar'}`}>
+                className={`formulario ${animarModal ? "animar" : 'cerrar'}`}>
 
-                <legend>Nuevo Gasto</legend>
+                <legend>{gastoEditar.nombre? "Editar Gasto":"Nuevo Gasto"}</legend>
 
                 {mensaje && <Mensaje tipo="error">{mensaje}</Mensaje>}
 
                 <div className='campo'>
                     <label htmlFor="nombre">Nombre Gasto</label>
-                    <input 
+                    <input
                         id='nombre'
-                        type="text" 
+                        type="text"
                         placeholder='Añade el nombre del gasto'
                         value={nombre}
-                        onChange={ e => setNombre(e.target.value)}
+                        onChange={e => setNombre(e.target.value)}
                     />
                 </div>
 
                 <div className='campo'>
                     <label htmlFor="cantidad">Cantidad</label>
-                    <input 
+                    <input
                         id='cantidad'
-                        type="number" 
+                        type="number"
                         placeholder='Añade la cantidad del gasto: ej. 300'
                         value={cantidad}
                         onChange={e => setCantidad(Number(e.target.value))}
@@ -78,9 +89,9 @@ const Modal = ({setModal,animarModal,setAnimarModal,guardarGasto}) => {
 
                 <div className='campo'>
                     <label htmlFor="categoria">Categoria</label>
-                    <select 
-                        id="categoria" 
-                        value={categoria} 
+                    <select
+                        id="categoria"
+                        value={categoria}
                         onChange={e => setCategoria(e.target.value)}>
 
                         <option value="">-- Seleccione --</option>
@@ -94,9 +105,9 @@ const Modal = ({setModal,animarModal,setAnimarModal,guardarGasto}) => {
                     </select>
                 </div>
 
-                <input 
+                <input
                     type="submit"
-                    value="Añadir Gasto"
+                    value={gastoEditar.nombre? "Guardar Cambios":"Añadir Gasto"}
                 />
             </form>
 
